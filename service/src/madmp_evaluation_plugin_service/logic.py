@@ -10,7 +10,7 @@ from . import schemas
 EVALUATION_SERVICE_API_URL = 'https://ostrails-dmp-evaluation.arisnet.ac.at/'
 
 
-async def init() -> schemas.InitResponse:
+async def prepare_form_data() -> schemas.FormDataResponse:
     async with httpx.AsyncClient() as client:
         try:
             eval_client = EvaluationServiceClient(
@@ -19,13 +19,13 @@ async def init() -> schemas.InitResponse:
             )
             benchmarks = await eval_client.get_benchmarks()
             tests = await eval_client.get_tests()
-            return schemas.InitResponse(
+            return schemas.FormDataResponse(
                 ok=True,
                 benchmarks=benchmarks,
                 tests=tests,
             )
         except Exception:
-            return schemas.InitResponse(
+            return schemas.FormDataResponse(
                 ok=False,
             )
 

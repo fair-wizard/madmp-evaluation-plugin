@@ -14,12 +14,12 @@ def create_app(api_url: str | None = None) -> fastapi.FastAPI:
         version='0.1.0',
     )
 
-    @app.get('/api/init', response_model=schemas.InitResponse)
-    async def get_init() -> schemas.InitResponse:
-        return await logic.init()
+    @app.get('/form-data', response_model=schemas.FormDataResponse)
+    async def get_form_data() -> schemas.FormDataResponse:
+        return await logic.prepare_form_data()
 
-    @app.post('/api/evaluate', response_model=schemas.EvaluationResponse)
-    async def post_evaluate(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:
+    @app.post('/evaluation', response_model=schemas.EvaluationResponse)
+    async def post_evaluation(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:
         return await logic.evaluate(api_url, req)
 
     return app
