@@ -20,7 +20,7 @@ requirements:
 
 .PHONY: dev
 dev:
-	uv run uvicorn plugin_service:create_app --reload
+	uv run uvicorn madmp_evaluation_plugin_service:create_app --reload
 
 .PHONY: build
 build:

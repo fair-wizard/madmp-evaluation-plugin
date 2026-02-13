@@ -1,11 +1,11 @@
 [project]
-name = "plugin-service"
-version = "1.0.0"
-description = "Plugin Service for ..."
+name = "madmp-evaluation-plugin-service"
+version = "0.1.0"
+description = "Plugin Service for evaluating maDMPs."
 keywords = ["wizard", "plugin"]
 license = "MIT"
 authors = [
-    { name = "...", email = "..." }
+    { name = "Marek Suchánek", email = "marek.suchanek@fair-wizard.com" }
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -18,6 +18,7 @@ classifiers = [
 requires-python = ">=3.13, <4"
 dependencies = [
     "fastapi>=0.120,<1.0",
+    "httpx>=0.28,<1.0",
 ]
 
 [dependency-groups]
