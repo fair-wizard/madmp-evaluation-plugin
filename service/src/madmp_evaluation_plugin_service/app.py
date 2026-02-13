@@ -1,5 +1,6 @@
 import fastapi
 import fastapi.responses
+import fastapi.middleware.cors
 
 from . import logic, schemas
 
@@ -12,6 +13,13 @@ def create_app(api_url: str | None = None) -> fastapi.FastAPI:
         title='maDMP Evaluation Plugin Service',
         description='A service to evaluate machine-actionable Data Management Plans (maDMPs).',
         version='0.1.0',
+    )
+    app.add_middleware(
+        fastapi.middleware.cors.CORSMiddleware,
+        allow_origins=['*'],
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*'],
     )
 
     @app.get('/form-data', response_model=schemas.FormDataResponse)
