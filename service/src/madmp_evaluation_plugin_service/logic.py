@@ -30,12 +30,12 @@ async def prepare_form_data() -> schemas.FormDataResponse:
             )
 
 
-async def evaluate(api_url: str, req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:
+async def evaluate(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:
     madmp = None
     async with httpx.AsyncClient() as client:
         try:
             wizard = WizardClient(
-                api_url=api_url,
+                api_url=req.api_url,
                 client=client,
             )
             project_data = await wizard.get_project(

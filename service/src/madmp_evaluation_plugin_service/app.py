@@ -5,10 +5,7 @@ import fastapi.middleware.cors
 from . import logic, schemas
 
 
-def create_app(api_url: str | None = None) -> fastapi.FastAPI:
-    api_url = api_url or ''
-    api_url = api_url.rstrip('/')
-
+def create_app() -> fastapi.FastAPI:
     app = fastapi.FastAPI(
         title='maDMP Evaluation Plugin Service',
         description='A service to evaluate machine-actionable Data Management Plans (maDMPs).',
@@ -28,6 +25,6 @@ def create_app(api_url: str | None = None) -> fastapi.FastAPI:
 
     @app.post('/evaluation', response_model=schemas.EvaluationResponse)
     async def post_evaluation(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:
-        return await logic.evaluate(api_url, req)
+        return await logic.evaluate(req)
 
     return app
