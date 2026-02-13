@@ -1,10 +1,10 @@
+import { makeNullCodec } from '@ds-wizard/plugin-sdk'
 import { PluginBuilder } from '@ds-wizard/plugin-sdk/core'
 import { Plugin } from '@ds-wizard/plugin-sdk/types'
 
+import EvaluationProjectTab from './components/EvaluationProjectTab'
 import { SettingsDataCodec } from './data/settings-data'
 import { pluginMetadata } from './metadata'
-import { makeNullCodec } from '@ds-wizard/plugin-sdk'
-import EvaluationProjectTab from './components/EvaluationProjectTab'
 
 export default function (settingsInput: unknown, _userSettingsInput: unknown): Plugin {
     // Use settings for plugin initialization or delete
