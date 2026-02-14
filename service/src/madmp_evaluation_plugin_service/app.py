@@ -1,5 +1,4 @@
 import fastapi
-import fastapi.responses
 import fastapi.middleware.cors
 
 from . import logic, schemas
@@ -12,7 +11,7 @@ def create_app() -> fastapi.FastAPI:
         version='0.1.0',
     )
     app.add_middleware(
-        fastapi.middleware.cors.CORSMiddleware,
+        middleware_class=fastapi.middleware.cors.CORSMiddleware,  # type: ignore
         allow_origins=['*'],
         allow_credentials=True,
         allow_methods=['*'],

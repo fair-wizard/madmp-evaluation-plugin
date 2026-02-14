@@ -2,10 +2,9 @@ import json
 
 import httpx
 
+from . import schemas
 from .evaluation_service import EvaluationServiceClient
 from .wizard import WizardClient
-from . import schemas
-
 
 EVALUATION_SERVICE_API_URL = 'https://ostrails-dmp-evaluation.arisnet.ac.at/'
 

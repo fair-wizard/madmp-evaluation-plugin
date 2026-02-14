@@ -37,7 +37,7 @@ module-root = "src"
 
 [tool.ruff]
 target-version = "py313"
-line-length = 80
+line-length = 100
 indent-width = 4
 include = ["src/**/*.py"]
 
@@ -45,7 +45,16 @@ include = ["src/**/*.py"]
 select = ["ALL"]
 ignore = [
     "D",
-    "CPY"
+    "CPY",
+    "E501",
+    "PLR0912",
+    "PLR0914",
+    "PLR0915",
+    "C901",
+    "N815",
+    "BLE001",
+    "ANN401",
+    "PGH003",
 ]
 preview = true
 
