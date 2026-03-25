@@ -29,7 +29,11 @@ class WizardClient:
         return response.json()
 
     def to_madmp(self, project_data: dict) -> dict:
-        package_id = project_data.get('knowledgeModelPackageId', '::')
+        package_data = project_data.get('knowledgeModelPackage', {})
+        org_id = package_data.get('organizationId', '')
+        km_id = package_data.get('kmId', '')
+        version = package_data.get('version', '')
+        package_id = f'{org_id}:{km_id}:{version}'
         if not package_id.startswith('dsw:root:'):
             msg = f'Unsupported knowledge model package: {package_id}'
             raise ValueError(msg)
