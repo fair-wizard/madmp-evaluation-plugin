@@ -1,7 +1,7 @@
 {
     "name": "madmp-evaluation-plugin",
     "version": "0.1.0",
-    "description": "",
+    "description": "Plugin to evaluate machine-actionable Data Management Plans (maDMPs) through integration with DMP Evaluation Service.",
     "license": "MIT",
     "author": "",
     "type": "module",
