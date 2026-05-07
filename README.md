@@ -2,7 +2,7 @@
 
 *Plugin to evaluate machine-actionable Data Management Plans (maDMPs) through integration with DMP Evaluation Service.*
 
-Plugin UUID: `55f16aea-5a53-4adb-a8a1-8d72109cb50d`
+Plugin UUID: `8d372e4a-6145-4863-9831-82eb0ead1195`
 
 ## How to Install
 
