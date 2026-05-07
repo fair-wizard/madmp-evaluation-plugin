@@ -1,5 +1,6 @@
 import re
 import typing
+from typing import Any
 
 import httpx
 
@@ -313,12 +314,19 @@ def _get_contributors(replies: dict) -> tuple[list, list]:
                     'type': 'other',
                 },
             }
-        else:
+        elif isinstance(orcid_reply, dict):
             orcid = _reply_orcid(orcid_reply)
             contributor: dict[str, typing.Any] = {
                 'contributor_id': {
                     'identifier': orcid,
                     'type': 'orcid',
+                },
+            }
+        else:
+            contributor: dict[str, typing.Any] = {
+                'contributor_id': {
+                    'identifier': '',
+                    'type': 'other',
                 },
             }
         contributor['name'] = name
@@ -518,7 +526,7 @@ def _get_projects(replies: dict) -> list:
                 funding_status = 'granted'
             elif funding_status_answer == UUIDs.projectFundingStatusRejectedAUuid:
                 funding_status = 'rejected'
-            funding = {
+            funding: dict[str, Any] = {
                 'funder_id': {
                     'identifier': funder_url,
                     'type': 'url',
@@ -534,7 +542,7 @@ def _get_projects(replies: dict) -> list:
             if funder_url:
                 fundings.append(funding)
 
-        project = {
+        project: dict[str, Any] = {
             'title': name,
         }
         if start:
@@ -629,7 +637,7 @@ def _get_datasets(replies: dict) -> list:
                             'start_date': start,
                         })
 
-                distribution = {
+                distribution: dict[str, Any] = {
                     'title': name,
                     'access': access,
                 }
@@ -637,7 +645,7 @@ def _get_datasets(replies: dict) -> list:
                     distribution['license'] = licenses
                 if access:
                     distributions.append(distribution)
-        dataset = {
+        dataset: dict[str, Any] = {
             'dataset_id': {
                 'identifier': item,
                 'type': 'other',
@@ -671,6 +679,7 @@ def _get_costs(replies: dict) -> list:
             allocation_choices = _reply_value_list(replies.get(_path(costs_path, cost_item, UUIDs.costAllocationQUuid)), [])
 
             allocations = []
+            allocation_sentence = None
             if isinstance(allocation_choices, list):
                 if UUIDs.costAllocationFindabilityAUuid in allocation_choices:
                     allocations.append('findability')
@@ -682,21 +691,20 @@ def _get_costs(replies: dict) -> list:
                     allocations.append('reusability')
                 if UUIDs.costManagementAUuid in allocation_choices:
                     allocations.append('cost management')
-                allocation_sentence = None
                 if len(allocations) > 0:
                     if len(allocations) == 1:
                         allocation_sentence = f'Cost allocation: {allocations[0]}.'
                     else:
                         allocation_sentence = f'Cost allocations: {", ".join(allocations[:-1])} and {allocations[-1]}.'
 
-            cost = {
+            cost: dict[str, Any] = {
                 'title': title,
             }
             if amount is not None:
                 cost['amount'] = float(amount) if amount else None
             if description or allocation_sentence:
                 cost['description'] = f'{allocation_sentence} {description}'.strip()
-            if currency_reply:
+            if currency_reply and isinstance(currency_reply, dict):
                 cost['currency'] = _reply_currency(currency_reply)
             costs.append(cost)
     return costs

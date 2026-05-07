@@ -11,7 +11,7 @@ def create_app() -> fastapi.FastAPI:
         version='0.1.0',
     )
     app.add_middleware(
-        middleware_class=fastapi.middleware.cors.CORSMiddleware,  # type: ignore
+        middleware_class=fastapi.middleware.cors.CORSMiddleware,
         allow_origins=['*'],
         allow_credentials=True,
         allow_methods=['*'],
