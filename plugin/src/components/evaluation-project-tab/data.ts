@@ -3,7 +3,7 @@ import { z } from 'zod'
 export type EvaluationType = 'benchmarks' | 'tests'
 
 export const BenchmarkSchema = z.object({
-    benchmarkId: z.string(),
+    identifier: z.string(),
     title: z.string(),
     description: z.string(),
 })
@@ -37,25 +37,26 @@ export const EvaluationResultSchema = z.enum([
     'FAIL',
     'ERROR',
     'INDERTERMINATED',
+    'INDETERMINATE',
     'NOT_APPLICABLE',
 ])
 
 export const EvaluationSchema = z.object({
-    evaluationId: z.string(),
+    identifier: z.string(),
 
     title: z.string(),
-    result: EvaluationResultSchema,
-    details: z.string(),
-    timestamp: z.iso.datetime(), // date-time string
+    value: EvaluationResultSchema,
+    description: z.string(),
+    generatedAtTime: z.iso.datetime(), // date-time string
     log: z.string(),
 
     reportId: z.string().optional(),
 
-    affectedElements: z.string().nullable().optional(),
+    affectedElements: z.array(z.string()).nullable().optional(), // array of strings
     completion: z.number().int().nullable().optional(), // int32
 
-    generated: z.string().optional(),
-    outputFromTest: z.string().optional(),
+    wasGeneratedBy: z.string().nullable().optional(),
+    outputFromTest: z.string().nullable().optional(),
 })
 
 export const EvaluationResponseSchema = z.object({

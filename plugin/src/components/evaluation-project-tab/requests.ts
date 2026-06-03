@@ -63,6 +63,7 @@ async function requestJson<TSchema extends z.ZodTypeAny>(
 
     const parsed = schema.safeParse(payload)
     if (!parsed.success) {
+        console.log('Schema validation error:', parsed.error)
         throw new Error('Unexpected response from server (schema mismatch)')
     }
 

@@ -5,6 +5,9 @@
     "license": "MIT",
     "author": "",
     "type": "module",
+    "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+    },
     "scripts": {
         "build": "npm run typecheck && npm run lint && npm run build:prod",
         "build:dev": "vite build --mode development",

@@ -31,13 +31,13 @@ export function EvaluationSelectionForm({
                 >
                     <option value="">Choose a benchmark...</option>
                     {formData.benchmarks.map((b) => (
-                        <option key={b.benchmarkId} value={b.benchmarkId}>
+                        <option key={b.identifier} value={b.identifier}>
                             {b.title}
                         </option>
                     ))}
                 </select>
                 <p className="text-muted mt-2">
-                    {formData.benchmarks.find((b) => b.benchmarkId === selectedId)?.description}
+                    {formData.benchmarks.find((b) => b.identifier === selectedId)?.description}
                 </p>
             </div>
         ) : (
