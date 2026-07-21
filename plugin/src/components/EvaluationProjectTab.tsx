@@ -31,7 +31,8 @@ export default function ProjectTab({ project }: ProjectTabComponentProps<Setting
 
                 setFormData(data)
                 setView('form')
-            } catch {
+            } catch (error: Error | unknown) {
+                console.log('Error loading form data:', error)
                 setLoadingError('Failed to load form data')
                 setView('error')
             }

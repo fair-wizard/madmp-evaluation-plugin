@@ -2,13 +2,18 @@
 
 *Plugin to evaluate machine-actionable Data Management Plans (maDMPs) through integration with DMP Evaluation Service.*
 
-Plugin UUID: `55f16aea-5a53-4adb-a8a1-8d72109cb50d`
+Plugin UUID: `8d372e4a-6145-4863-9831-82eb0ead1195`
 
 ## How to Install
 
 See the [Plugins](https://guide.ds-wizard.org/en/latest/more/self-hosted-dsw/configuration/plugins.html) page in the DSW Guide for instructions on how to install the plugin.
 
 ## Changelog
+
+### 0.2.0
+
+- Updated to changed API of DMP Evaluation Service (not versioned yet)
+- Updated dependencies
 
 ### 0.1.0
 

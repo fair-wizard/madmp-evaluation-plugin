@@ -46,7 +46,7 @@ export default defineConfig(({ mode }) => {
             // Dev: readable + sourcemaps
             // Prod: aggressive minify + hidden sourcemaps
             sourcemap: isProd ? 'hidden' : true,
-            minify: isProd ? 'terser' : 'esbuild',
+            minify: isProd ? 'terser' : false,
 
             // Only applies when minify === 'terser'
             terserOptions: isProd
@@ -66,9 +66,9 @@ export default defineConfig(({ mode }) => {
             emptyOutDir: true,
 
             // Single-file bundle (handy for plugin loaders)
-            rollupOptions: {
+            rolldownOptions: {
                 output: {
-                    inlineDynamicImports: true,
+                    codeSplitting: false,
                 },
                 plugins: [emitManifestPlugin(pluginMetadata)],
             },
