@@ -10,6 +10,11 @@ See the [Plugins](https://guide.ds-wizard.org/en/latest/more/self-hosted-dsw/con
 
 ## Changelog
 
+### 0.2.0
+
+- Updated to changed API of DMP Evaluation Service (not versioned yet)
+- Updated dependencies
+
 ### 0.1.0
 
 Initial version of the prototype.
