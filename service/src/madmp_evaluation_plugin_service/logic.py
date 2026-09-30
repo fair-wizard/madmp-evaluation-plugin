@@ -1,4 +1,5 @@
 import json
+import os
 
 import httpx
 
@@ -6,7 +7,10 @@ from . import schemas
 from .evaluation_service import EvaluationServiceClient
 from .wizard import WizardClient
 
-EVALUATION_SERVICE_API_URL = 'https://ostrails-dmp-evaluation.arisnet.ac.at/'
+EVALUATION_SERVICE_API_URL = os.environ.get(
+    'EVALUATION_SERVICE_API_URL',
+    'https://ostrails-dmp-evaluation.arisnet.ac.at/',
+)
 
 
 async def prepare_form_data() -> schemas.FormDataResponse:
