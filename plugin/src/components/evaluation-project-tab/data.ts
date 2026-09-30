@@ -28,6 +28,7 @@ export type EvaluationRequest = {
     apiUrl: string | null
     projectUuid: string | null
     userToken: string | null
+    clientUrl: string
     benchmark: string | null
     test: string | null
 }

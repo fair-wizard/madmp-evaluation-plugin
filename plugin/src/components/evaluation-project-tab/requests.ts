@@ -29,6 +29,7 @@ export async function postEvaluation(
         apiUrl: apiUrl,
         projectUuid: project?.uuid || null,
         userToken: token,
+        clientUrl: getClientUrl(),
         benchmark: evaluationType === 'benchmarks' ? id : null,
         test: evaluationType === 'tests' ? id : null,
     }
@@ -37,6 +38,12 @@ export async function postEvaluation(
         method: 'POST',
         body: evaluationRequest,
     })
+}
+
+function getClientUrl(): string {
+    // Plugin runs within the project page, i.e., <clientUrl>/projects/<uuid>/...
+    const [clientUrl] = window.location.href.split('/projects/')
+    return clientUrl.replace(/\/+$/, '')
 }
 
 async function requestJson<TSchema extends z.ZodTypeAny>(

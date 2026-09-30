@@ -38,12 +38,10 @@ async def _get_madmp(client: httpx.AsyncClient, req: schemas.EvaluationRequest) 
         api_url=req.api_url,
         client=client,
     )
-    project_data = await wizard.get_project(
+    return await wizard.get_madmp(
         project_uuid=req.project_uuid,
         user_token=req.user_token,
-    )
-    return wizard.to_madmp(
-        project_data=project_data,
+        client_url=req.client_url,
     )
 
 

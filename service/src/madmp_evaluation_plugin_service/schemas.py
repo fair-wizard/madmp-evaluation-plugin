@@ -18,6 +18,7 @@ class EvaluationRequest(BaseModel):
     api_url: str
     project_uuid: str
     user_token: str
+    client_url: str | None = None
     benchmark: str | None = None
     test: str | None = None
 
