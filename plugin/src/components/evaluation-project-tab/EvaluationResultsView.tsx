@@ -181,6 +181,7 @@ function badgeClass(result: EvaluationResult) {
         case 'ERROR':
             return 'badge bg-dark'
         case 'INDERTERMINATED':
+        case 'INDETERMINATE':
             return 'badge bg-warning text-dark'
         case 'NOT_APPLICABLE':
             return 'badge bg-secondary'
@@ -198,6 +199,7 @@ function iconClass(result: EvaluationResult) {
         case 'ERROR':
             return 'fas fa-bug'
         case 'INDERTERMINATED':
+        case 'INDETERMINATE':
             return 'fas fa-question-circle'
         case 'NOT_APPLICABLE':
             return 'fas fa-minus-circle'

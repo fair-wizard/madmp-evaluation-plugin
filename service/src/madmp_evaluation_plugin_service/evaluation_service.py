@@ -19,11 +19,17 @@ class EvaluationServiceClient:
         return response.json()
 
     async def get_tests(self) -> list[dict]:
+        # Newer versions of the service list tests at /tests/list (JSON), older at /tests/info
         response = await self.client.get(
-            url='/tests/info',
+            url='/tests/list',
+            headers={'Accept': 'application/json'},
         )
+        if not response.is_success or not response.headers.get('content-type', '').startswith('application/json'):
+            response = await self.client.get(
+                url='/tests/info',
+            )
         response.raise_for_status()
-        return response.json()
+        return [_normalize_test(test) for test in response.json()]
 
     async def evaluate_benchmark(self, benchmark: str, madmp: str) -> list[dict]:
         response = await self.client.post(
@@ -50,3 +56,10 @@ class EvaluationServiceClient:
         )
         response.raise_for_status()
         return response.json()
+
+
+def _normalize_test(test: dict) -> dict:
+    # Older versions of the service use 'id' instead of 'identifier'
+    if 'identifier' not in test and 'id' in test:
+        test['identifier'] = test.pop('id')
+    return test
