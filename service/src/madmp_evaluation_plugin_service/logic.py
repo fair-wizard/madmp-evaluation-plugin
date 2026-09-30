@@ -29,38 +29,51 @@ async def prepare_form_data() -> schemas.FormDataResponse:
             )
 
 
+async def _get_madmp(client: httpx.AsyncClient, req: schemas.EvaluationRequest) -> dict:
+    wizard = WizardClient(
+        api_url=req.api_url,
+        client=client,
+    )
+    project_data = await wizard.get_project(
+        project_uuid=req.project_uuid,
+        user_token=req.user_token,
+    )
+    return wizard.to_madmp(
+        project_data=project_data,
+    )
+
+
+async def _run_evaluations(
+    client: httpx.AsyncClient,
+    req: schemas.EvaluationRequest,
+    madmp: dict,
+) -> list[dict]:
+    eval_client = EvaluationServiceClient(
+        api_url=EVALUATION_SERVICE_API_URL,
+        client=client,
+    )
+    evaluations = []
+    if req.benchmark:
+        benchmark_evaluations = await eval_client.evaluate_benchmark(
+            benchmark=req.benchmark,
+            madmp=json.dumps(madmp),
+        )
+        evaluations.extend(benchmark_evaluations)
+    if req.test:
+        test_evaluation = await eval_client.evaluate_test(
+            test=req.test,
+            madmp=json.dumps(madmp),
+        )
+        evaluations.append(test_evaluation)
+    return evaluations
+
+
 async def evaluate(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:
     madmp = None
     async with httpx.AsyncClient() as client:
         try:
-            wizard = WizardClient(
-                api_url=req.api_url,
-                client=client,
-            )
-            project_data = await wizard.get_project(
-                project_uuid=req.project_uuid,
-                user_token=req.user_token,
-            )
-            madmp = wizard.to_madmp(
-                project_data=project_data,
-            )
-            eval_client = EvaluationServiceClient(
-                api_url=EVALUATION_SERVICE_API_URL,
-                client=client,
-            )
-            evaluations = []
-            if req.benchmark:
-                benchmark_evaluations = await eval_client.evaluate_benchmark(
-                    benchmark=req.benchmark,
-                    madmp=json.dumps(madmp),
-                )
-                evaluations.extend(benchmark_evaluations)
-            if req.test:
-                test_evaluation = await eval_client.evaluate_test(
-                    test=req.test,
-                    madmp=json.dumps(madmp),
-                )
-                evaluations.append(test_evaluation)
+            madmp = await _get_madmp(client, req)
+            evaluations = await _run_evaluations(client, req, madmp)
             return schemas.EvaluationResponse(
                 ok=True,
                 evaluations=evaluations,

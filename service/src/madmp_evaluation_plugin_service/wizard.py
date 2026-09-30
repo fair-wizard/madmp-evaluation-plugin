@@ -643,8 +643,7 @@ def _get_datasets(replies: dict) -> list:
                 }
                 if len(licenses) > 0:
                     distribution['license'] = licenses
-                if access:
-                    distributions.append(distribution)
+                distributions.append(distribution)
         dataset: dict[str, Any] = {
             'dataset_id': {
                 'identifier': item,
