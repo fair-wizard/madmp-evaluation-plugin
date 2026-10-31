@@ -20,7 +20,7 @@ class EvaluationServiceClient:
 
     async def get_tests(self) -> list[dict]:
         response = await self.client.get(
-            url='/tests/info',
+            url='/tests/list',
         )
         response.raise_for_status()
         return response.json()

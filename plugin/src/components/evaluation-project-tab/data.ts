@@ -9,7 +9,7 @@ export const BenchmarkSchema = z.object({
 })
 
 export const TestSchema = z.object({
-    id: z.string(),
+    identifier: z.string(),
     title: z.string(),
     description: z.string(),
 })
@@ -48,7 +48,7 @@ export const EvaluationSchema = z.object({
     value: EvaluationResultSchema,
     description: z.string(),
     generatedAtTime: z.iso.datetime(), // date-time string
-    log: z.string(),
+    log: z.string().nullable().optional(),
 
     reportId: z.string().optional(),
 

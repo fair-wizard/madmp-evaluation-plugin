@@ -51,13 +51,13 @@ export function EvaluationSelectionForm({
                 >
                     <option value="">Choose a test...</option>
                     {formData.tests.map((t) => (
-                        <option key={t.id} value={t.id}>
+                        <option key={t.identifier} value={t.identifier}>
                             {t.title}
                         </option>
                     ))}
                 </select>
                 <p className="text-muted mt-2">
-                    {formData.tests.find((t) => t.id === selectedId)?.description}
+                    {formData.tests.find((t) => t.identifier === selectedId)?.description}
                 </p>
             </div>
         )
