@@ -1,5 +1,8 @@
+import typing
+
 import fastapi
 import fastapi.middleware.cors
+import pydantic
 
 from . import logic, schemas
 
@@ -19,8 +22,13 @@ def create_app() -> fastapi.FastAPI:
     )
 
     @app.get('/form-data', response_model=schemas.FormDataResponse)
-    async def get_form_data() -> schemas.FormDataResponse:
-        return await logic.prepare_form_data()
+    async def get_form_data(
+        evaluation_service_url: typing.Annotated[
+            pydantic.HttpUrl | None,
+            fastapi.Query(alias='evaluationServiceUrl'),
+        ] = None,
+    ) -> schemas.FormDataResponse:
+        return await logic.prepare_form_data(evaluation_service_url)
 
     @app.post('/evaluation', response_model=schemas.EvaluationResponse)
     async def post_evaluation(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse:

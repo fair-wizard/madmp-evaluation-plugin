@@ -22,12 +22,17 @@ export const FormDataSchema = z.object({
     tests: z.array(TestSchema),
 })
 
+export const FormDataResponseSchema = FormDataSchema.extend({
+    ok: z.boolean(),
+})
+
 export type FormData = z.infer<typeof FormDataSchema>
 
 export type EvaluationRequest = {
     apiUrl: string | null
     projectUuid: string | null
     userToken: string | null
+    evaluationServiceUrl: string
     benchmark: string | null
     test: string | null
 }

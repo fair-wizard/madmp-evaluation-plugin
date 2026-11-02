@@ -1,7 +1,7 @@
 import { ProjectTabComponentProps } from '@ds-wizard/plugin-sdk/elements'
 import { useEffect, useState } from 'react'
 
-import { SettingsData } from '../data/settings-data'
+import { getEvaluationServiceUrl, SettingsData } from '../data/settings-data'
 import { EvaluationResponse, EvaluationType, FormData } from './evaluation-project-tab/data'
 import { ErrorMessage } from './evaluation-project-tab/ErrorMessage'
 import { EvaluationResultsView } from './evaluation-project-tab/EvaluationResultsView'
@@ -11,7 +11,12 @@ import { getFormData, postEvaluation } from './evaluation-project-tab/requests'
 
 type View = 'loading' | 'form' | 'results' | 'error'
 
-export default function ProjectTab({ project }: ProjectTabComponentProps<SettingsData, null>) {
+export default function ProjectTab({
+    project,
+    settings,
+}: ProjectTabComponentProps<SettingsData, null>) {
+    const evaluationServiceUrl = getEvaluationServiceUrl(settings)
+
     const [view, setView] = useState<View>('loading')
     const [loadingError, setLoadingError] = useState<string | null>(null)
 
@@ -27,7 +32,7 @@ export default function ProjectTab({ project }: ProjectTabComponentProps<Setting
                 setLoadingError(null)
                 setView('loading')
 
-                const data = await getFormData()
+                const data = await getFormData(evaluationServiceUrl)
 
                 setFormData(data)
                 setView('form')
@@ -38,14 +43,14 @@ export default function ProjectTab({ project }: ProjectTabComponentProps<Setting
             }
         }
         load()
-    }, [])
+    }, [evaluationServiceUrl])
 
     const handleSubmit = async (evaluationType: EvaluationType, id: string) => {
         try {
             setEvaluationError(null)
             setEvaluationLoading(true)
 
-            const result = await postEvaluation(project, evaluationType, id)
+            const result = await postEvaluation(project, evaluationServiceUrl, evaluationType, id)
 
             if (result.ok) {
                 setEvaluationResult(result)

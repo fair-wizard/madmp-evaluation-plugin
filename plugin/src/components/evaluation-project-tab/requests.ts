@@ -8,15 +8,26 @@ import {
     EvaluationResponseSchema,
     EvaluationType,
     FormData,
-    FormDataSchema,
+    FormDataResponseSchema,
 } from './data'
 
-export async function getFormData(): Promise<FormData> {
-    return await requestJson(`${__API_URL__}/form-data`, FormDataSchema)
+export async function getFormData(evaluationServiceUrl: string): Promise<FormData> {
+    const query = new URLSearchParams({ evaluationServiceUrl })
+    const { ok, benchmarks, tests } = await requestJson(
+        `${__API_URL__}/form-data?${query}`,
+        FormDataResponseSchema,
+    )
+
+    if (!ok) {
+        throw new Error('Failed to load data from DMP Evaluation Service')
+    }
+
+    return { benchmarks, tests }
 }
 
 export async function postEvaluation(
     project: ProjectData | null,
+    evaluationServiceUrl: string,
     evaluationType: EvaluationType,
     id: string,
 ): Promise<EvaluationResponse> {
@@ -26,6 +37,7 @@ export async function postEvaluation(
         apiUrl: apiUrl,
         projectUuid: project?.uuid || null,
         userToken: token,
+        evaluationServiceUrl,
         benchmark: evaluationType === 'benchmarks' ? id : null,
         test: evaluationType === 'tests' ? id : null,
     }

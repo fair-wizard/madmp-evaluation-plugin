@@ -1,19 +1,22 @@
 import json
 
 import httpx
+import pydantic
 
 from . import schemas
 from .evaluation_service import EvaluationServiceClient
 from .wizard import WizardClient
 
-EVALUATION_SERVICE_API_URL = 'https://ostrails-dmp-evaluation.arisnet.ac.at/'
+DEFAULT_EVALUATION_SERVICE_API_URL = 'https://ostrails-dmp-evaluation.arisnet.ac.at/'
 
 
-async def prepare_form_data() -> schemas.FormDataResponse:
+async def prepare_form_data(
+    evaluation_service_url: pydantic.HttpUrl | None = None,
+) -> schemas.FormDataResponse:
     async with httpx.AsyncClient() as client:
         try:
             eval_client = EvaluationServiceClient(
-                api_url=EVALUATION_SERVICE_API_URL,
+                api_url=str(evaluation_service_url or DEFAULT_EVALUATION_SERVICE_API_URL),
                 client=client,
             )
             benchmarks = await eval_client.get_benchmarks()
@@ -45,7 +48,7 @@ async def evaluate(req: schemas.EvaluationRequest) -> schemas.EvaluationResponse
                 project_data=project_data,
             )
             eval_client = EvaluationServiceClient(
-                api_url=EVALUATION_SERVICE_API_URL,
+                api_url=str(req.evaluation_service_url or DEFAULT_EVALUATION_SERVICE_API_URL),
                 client=client,
             )
             evaluations = []
