@@ -21,10 +21,10 @@
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
-        "@types/node": "^26.6.5",
+        "@types/node": "^26.6.6",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.72.0",
+        "@typescript-eslint/eslint-plugin": "^8.72.1",
         "@typescript-eslint/parser": "^8.71.0",
         "@vitejs/plugin-react": "^6.1.2",
         "concurrently": "^10.0.6",
@@ -37,7 +37,7 @@
         "prettier": "^3.9.10",
         "terser": "^5.51.2",
         "typescript": "^6.0.3",
-        "vite": "^8.3.4"
+        "vite": "^8.3.5"
     },
     "dependencies": {
         "@ds-wizard/plugin-sdk": "^0.11.0",
