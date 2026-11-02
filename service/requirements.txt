@@ -30,7 +30,7 @@ pydantic==2.13.5
     # via fastapi
 pydantic-core==2.50.1
     # via pydantic
-starlette==1.7.0
+starlette==1.10.0
     # via fastapi
 typing-extensions==4.16.0
     # via
