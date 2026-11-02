@@ -1,5 +1,5 @@
 # Local DMP Evaluation Service for development (http://localhost:8090)
-# Run the plugin service against it: EVALUATION_SERVICE_API_URL=http://localhost:8090 make dev
+# Run the plugin service with `make dev` and set the DMP Evaluation Service URL in the plugin settings to http://localhost:8090
 services:
   mongodb:
     image: mongo:6.0

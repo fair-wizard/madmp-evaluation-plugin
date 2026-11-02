@@ -10,13 +10,17 @@ See the [Plugins](https://guide.ds-wizard.org/en/latest/more/self-hosted-dsw/con
 
 ## Development
 
-To run the [DMP Evaluation Service](https://github.com/OSTrails/DMP-Evaluation-Service) locally (on port 8090), start it with Docker Compose and point the plugin service to it:
+To run the [DMP Evaluation Service](https://github.com/OSTrails/DMP-Evaluation-Service) locally (on port 8090), start it with Docker Compose and start the plugin service:
 
 ```bash
 docker compose up -d
 cd service
-EVALUATION_SERVICE_API_URL=http://localhost:8090 make dev
+make dev
 ```
+
+Then set **DMP Evaluation Service URL** to `http://localhost:8090` in the plugin settings.
+
+The `EVALUATION_SERVICE_API_URL` environment variable only sets the fallback for requests without a URL. The plugin always sends the URL from its settings, so the variable has no effect on requests from the plugin.
 
 ## Changelog
 
