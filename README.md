@@ -24,6 +24,15 @@ The `EVALUATION_SERVICE_API_URL` environment variable only sets the fallback for
 
 ## Changelog
 
+### 1.0.0
+
+- Made DMP Evaluation Service URL configurable in plugin settings
+- Updated to DMP Evaluation Service API 1.0.0
+- Updated maDMP mapping (supports `dsw:root` and `dsw:lifesciences` knowledge models)
+- Updated plugin SDK to 0.11.0 (plugin API 0.4)
+- Fixed reading Wizard session with the new SDK
+- Updated dependencies
+
 ### 0.2.0
 
 - Updated to changed API of DMP Evaluation Service (not versioned yet)
