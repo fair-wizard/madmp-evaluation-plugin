@@ -26,6 +26,7 @@ dev = [
     "uvicorn",
     "ruff",
     "ty",
+    "pytest",
 ]
 
 [build-system]
