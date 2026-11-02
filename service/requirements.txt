@@ -28,7 +28,7 @@ opentelemetry-api==1.45.1
     # via fastapi
 pydantic==2.13.5
     # via fastapi
-pydantic-core==2.50.1
+pydantic-core==2.50.2
     # via pydantic
 starlette==1.7.0
     # via fastapi
