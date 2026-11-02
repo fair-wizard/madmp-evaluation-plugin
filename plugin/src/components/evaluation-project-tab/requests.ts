@@ -1,4 +1,5 @@
 import { ProjectData } from '@ds-wizard/plugin-sdk'
+import { getApiUrlAndToken } from '@ds-wizard/plugin-sdk/requests'
 import { z } from 'zod'
 
 import {
@@ -7,29 +8,37 @@ import {
     EvaluationResponseSchema,
     EvaluationType,
     FormData,
-    FormDataSchema,
+    FormDataResponseSchema,
 } from './data'
 
-export async function getFormData(): Promise<FormData> {
-    return await requestJson(`${__API_URL__}/form-data`, FormDataSchema)
+export async function getFormData(evaluationServiceUrl: string): Promise<FormData> {
+    const query = new URLSearchParams({ evaluationServiceUrl })
+    const { ok, benchmarks, tests } = await requestJson(
+        `${__API_URL__}/form-data?${query}`,
+        FormDataResponseSchema,
+    )
+
+    if (!ok) {
+        throw new Error('Failed to load data from DMP Evaluation Service')
+    }
+
+    return { benchmarks, tests }
 }
 
 export async function postEvaluation(
     project: ProjectData | null,
+    evaluationServiceUrl: string,
     evaluationType: EvaluationType,
     id: string,
 ): Promise<EvaluationResponse> {
-    const sessionString = localStorage.getItem('session/wizard')
-    const session = sessionString ? JSON.parse(sessionString) : null
-
-    const apiUrl = session?.apiUrl || null
-    const token = session?.token?.token || null
+    const { apiUrl, token } = getApiUrlAndToken()
 
     const evaluationRequest: EvaluationRequest = {
         apiUrl: apiUrl,
         projectUuid: project?.uuid || null,
         userToken: token,
         clientUrl: getClientUrl(),
+        evaluationServiceUrl,
         benchmark: evaluationType === 'benchmarks' ? id : null,
         test: evaluationType === 'tests' ? id : null,
     }

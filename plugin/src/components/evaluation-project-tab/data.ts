@@ -22,6 +22,10 @@ export const FormDataSchema = z.object({
     tests: z.array(TestSchema),
 })
 
+export const FormDataResponseSchema = FormDataSchema.extend({
+    ok: z.boolean(),
+})
+
 export type FormData = z.infer<typeof FormDataSchema>
 
 export type EvaluationRequest = {
@@ -29,6 +33,7 @@ export type EvaluationRequest = {
     projectUuid: string | null
     userToken: string | null
     clientUrl: string
+    evaluationServiceUrl: string
     benchmark: string | null
     test: string | null
 }
@@ -49,7 +54,7 @@ export const EvaluationSchema = z.object({
     value: EvaluationResultSchema,
     description: z.string(),
     generatedAtTime: z.iso.datetime(), // date-time string
-    log: z.string(),
+    log: z.string().nullable().optional(),
 
     reportId: z.string().nullable().optional(),
 

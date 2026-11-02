@@ -3,6 +3,7 @@ import { PluginBuilder } from '@ds-wizard/plugin-sdk/core'
 import { Plugin } from '@ds-wizard/plugin-sdk/types'
 
 import EvaluationProjectTab from './components/EvaluationProjectTab'
+import EvaluationSettings from './components/EvaluationSettings'
 import { SettingsDataCodec } from './data/settings-data'
 import { pluginMetadata } from './metadata'
 
@@ -26,6 +27,7 @@ export default function (settingsInput: unknown, _userSettingsInput: unknown): P
             EvaluationProjectTab, // React component with plugin functionality
             ['dsw:root:^2'], // (optional) list of supported knowledge models
         )
+        .addSettings('x-madmp-evaluation-settings', EvaluationSettings)
         .createPlugin()
 
     return plugin

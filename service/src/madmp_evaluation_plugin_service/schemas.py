@@ -19,6 +19,7 @@ class EvaluationRequest(BaseModel):
     project_uuid: str
     user_token: str
     client_url: str | None = None
+    evaluation_service_url: pydantic.HttpUrl | None = None
     benchmark: str | None = None
     test: str | None = None
 
