@@ -1,4 +1,5 @@
 import { ProjectData } from '@ds-wizard/plugin-sdk'
+import { getApiUrlAndToken } from '@ds-wizard/plugin-sdk/requests'
 import { z } from 'zod'
 
 import {
@@ -19,11 +20,7 @@ export async function postEvaluation(
     evaluationType: EvaluationType,
     id: string,
 ): Promise<EvaluationResponse> {
-    const sessionString = localStorage.getItem('session/wizard')
-    const session = sessionString ? JSON.parse(sessionString) : null
-
-    const apiUrl = session?.apiUrl || null
-    const token = session?.token?.token || null
+    const { apiUrl, token } = getApiUrlAndToken()
 
     const evaluationRequest: EvaluationRequest = {
         apiUrl: apiUrl,

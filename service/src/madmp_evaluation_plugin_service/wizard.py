@@ -17,7 +17,7 @@ class WizardClient:
 
     @property
     def client_url(self) -> str:
-        return self.api_url[:-4]
+        return re.sub(r'/(wizard-)?api$', '', self.api_url)
 
     async def get_project(self, project_uuid: str, user_token: str) -> dict:
         response = await self.client.get(
