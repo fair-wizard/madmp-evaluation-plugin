@@ -1,0 +1,26 @@
+# Local DMP Evaluation Service for development (http://localhost:8090)
+# Run the plugin service against it: EVALUATION_SERVICE_API_URL=http://localhost:8090 make dev
+services:
+  mongodb:
+    image: mongo:6.0
+    volumes:
+      - mongo-data:/data/db
+
+  dmp-evaluation-service:
+    build: https://github.com/OSTrails/DMP-Evaluation-Service.git#main:dmp-evaluator-service
+    ports:
+      - '8090:8080'
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/dmp-evaluator
+      # Local development only secrets
+      JWT_SECRET: bG9jYWwtZGV2ZWxvcG1lbnQtb25seS1qd3Qtc2VjcmV0IQ==
+      ADMIN_CLIENT_SECRET: admin
+      TEST_URL: http://localhost:8090/tests
+      METRIC_URL: http://localhost:8090/metrics
+      BENCHMARK_URL: http://localhost:8090/benchmarks
+      RATE_LIMIT_ENABLED: 'false'
+
+volumes:
+  mongo-data:

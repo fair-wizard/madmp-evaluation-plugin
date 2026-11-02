@@ -8,6 +8,16 @@ Plugin UUID: `8d372e4a-6145-4863-9831-82eb0ead1195`
 
 See the [Plugins](https://guide.ds-wizard.org/en/latest/more/self-hosted-dsw/configuration/plugins.html) page in the DSW Guide for instructions on how to install the plugin.
 
+## Development
+
+To run the [DMP Evaluation Service](https://github.com/OSTrails/DMP-Evaluation-Service) locally (on port 8090), start it with Docker Compose and point the plugin service to it:
+
+```bash
+docker compose up -d
+cd service
+EVALUATION_SERVICE_API_URL=http://localhost:8090 make dev
+```
+
 ## Changelog
 
 ### 0.2.0
