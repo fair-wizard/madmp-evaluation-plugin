@@ -1,12 +1,12 @@
 import { ProjectTabComponentProps } from '@ds-wizard/plugin-sdk/elements'
+import { AsyncBlock } from '@ds-wizard/plugin-sdk/ui/AsyncBlock'
+import { Stack } from '@ds-wizard/plugin-sdk/ui/Layout'
 import { useEffect, useState } from 'react'
 
 import { getEvaluationServiceUrl, SettingsData } from '../data/settings-data'
 import { EvaluationResponse, EvaluationType, FormData } from './evaluation-project-tab/data'
-import { ErrorMessage } from './evaluation-project-tab/ErrorMessage'
 import { EvaluationResultsView } from './evaluation-project-tab/EvaluationResultsView'
 import { EvaluationSelectionForm } from './evaluation-project-tab/EvaluationSelectionForm'
-import { Loader } from './evaluation-project-tab/Loader'
 import { getFormData, postEvaluation } from './evaluation-project-tab/requests'
 
 type View = 'loading' | 'form' | 'results' | 'error'
@@ -67,18 +67,29 @@ export default function ProjectTab({
         }
     }
 
-    if (view === 'loading') return <Loader />
-    if (view === 'error') return <ErrorMessage message={loadingError} />
-    if (view === 'results' && evaluationResult) {
-        return <EvaluationResultsView data={evaluationResult} onBack={() => setView('form')} />
+    if (view === 'loading' || view === 'error') {
+        return (
+            <Stack>
+                <AsyncBlock
+                    loading={view === 'loading'}
+                    error={loadingError ?? 'An unknown error occurred'}
+                />
+            </Stack>
+        )
     }
 
     return (
-        <EvaluationSelectionForm
-            formData={formData}
-            evaluationLoading={evaluationLoading}
-            evaluationError={evaluationError}
-            onSubmit={handleSubmit}
-        />
+        <Stack loose>
+            {view === 'results' && evaluationResult ? (
+                <EvaluationResultsView data={evaluationResult} onBack={() => setView('form')} />
+            ) : (
+                <EvaluationSelectionForm
+                    formData={formData}
+                    evaluationLoading={evaluationLoading}
+                    evaluationError={evaluationError}
+                    onSubmit={handleSubmit}
+                />
+            )}
+        </Stack>
     )
 }

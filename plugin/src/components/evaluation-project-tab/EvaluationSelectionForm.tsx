@@ -1,7 +1,15 @@
+import { Alert } from '@ds-wizard/plugin-sdk/ui/Alert'
+import { Button } from '@ds-wizard/plugin-sdk/ui/Button'
+import { SelectField } from '@ds-wizard/plugin-sdk/ui/Field'
+import { FormActions } from '@ds-wizard/plugin-sdk/ui/Form'
+import { Stack } from '@ds-wizard/plugin-sdk/ui/Layout'
+import { TabPanel, Tabs } from '@ds-wizard/plugin-sdk/ui/Tabs'
+import { Title } from '@ds-wizard/plugin-sdk/ui/Text'
 import { useState } from 'react'
 
 import { EvaluationType, FormData } from './data'
-import { FlashError } from './FlashError'
+
+const TABS_ID = 'madmp-evaluation-type'
 
 export function EvaluationSelectionForm({
     formData,
@@ -17,95 +25,55 @@ export function EvaluationSelectionForm({
     const [selectedTab, setSelectedTab] = useState<EvaluationType>('benchmarks')
     const [selectedId, setSelectedId] = useState<string>('')
 
-    const evaluationErrorMessage = evaluationError ? <FlashError message={evaluationError} /> : null
+    const isBenchmarks = selectedTab === 'benchmarks'
+    const items = isBenchmarks ? formData.benchmarks : formData.tests
+    const selected = items.find((item) => item.identifier === selectedId)
 
-    const content =
-        selectedTab === 'benchmarks' ? (
-            <div className="form-group">
-                <label htmlFor="benchmark-select">Select Benchmark</label>
-                <select
-                    id="benchmark-select"
-                    className="form-select"
-                    value={selectedId}
-                    onChange={(e) => setSelectedId(e.target.value)}
-                >
-                    <option value="">Choose a benchmark...</option>
-                    {formData.benchmarks.map((b) => (
-                        <option key={b.identifier} value={b.identifier}>
-                            {b.title}
-                        </option>
-                    ))}
-                </select>
-                <p className="text-muted mt-2">
-                    {formData.benchmarks.find((b) => b.identifier === selectedId)?.description}
-                </p>
-            </div>
-        ) : (
-            <div className="form-group">
-                <label htmlFor="test-select">Select Test</label>
-                <select
-                    id="test-select"
-                    className="form-select"
-                    value={selectedId}
-                    onChange={(e) => setSelectedId(e.target.value)}
-                >
-                    <option value="">Choose a test...</option>
-                    {formData.tests.map((t) => (
-                        <option key={t.identifier} value={t.identifier}>
-                            {t.title}
-                        </option>
-                    ))}
-                </select>
-                <p className="text-muted mt-2">
-                    {formData.tests.find((t) => t.identifier === selectedId)?.description}
-                </p>
-            </div>
-        )
+    const selectTab = (tab: string) => {
+        setSelectedTab(tab as EvaluationType)
+        setSelectedId('')
+    }
 
     return (
-        <div className="Projects__Detail__Content">
-            <div className="col col-detail mx-auto">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h2>Evaluate</h2>
-                </div>
-                {evaluationErrorMessage}
-                <div>
-                    <ul className="nav nav-underline-tabs nav-underline-tabs-full border-bottom mb-3">
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${selectedTab === 'benchmarks' ? 'active' : ''}`}
-                                onClick={() => setSelectedTab('benchmarks')}
-                            >
-                                <i className="fas fa-list-check"></i>
-                                Benchmarks
-                            </button>
-                        </li>
-                        <li className="nav-item">
-                            <button
-                                className={`nav-link ${selectedTab === 'tests' ? 'active' : ''}`}
-                                onClick={() => setSelectedTab('tests')}
-                            >
-                                <i className="far fa-circle-check"></i>
-                                Tests
-                            </button>
-                        </li>
-                    </ul>
-                    {content}
-                    <div className="mt-4 pt-4 border-top">
-                        <button
-                            className="btn btn-wide btn-primary"
-                            onClick={() => onSubmit(selectedTab, selectedId)}
-                            disabled={evaluationLoading || !selectedId}
-                        >
-                            {evaluationLoading ? (
-                                <i className="fas fa-spinner fa-spin"></i>
-                            ) : (
-                                'Evaluate'
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Stack loose>
+            <Title>Evaluate</Title>
+            {evaluationError && <Alert tone="danger">{evaluationError}</Alert>}
+            <Tabs
+                id={TABS_ID}
+                label="Evaluation type"
+                full
+                active={selectedTab}
+                onSelect={selectTab}
+                tabs={[
+                    { id: 'benchmarks', label: 'Benchmarks', icon: 'fa-list-check' },
+                    { id: 'tests', label: 'Tests', icon: 'far fa-circle-check' },
+                ]}
+            />
+            <TabPanel tabsId={TABS_ID} label={isBenchmarks ? 'Benchmarks' : 'Tests'}>
+                <SelectField
+                    label={isBenchmarks ? 'Benchmark' : 'Test'}
+                    value={selectedId}
+                    onChange={setSelectedId}
+                    hint={selected?.description}
+                    options={[
+                        {
+                            value: '',
+                            label: isBenchmarks ? 'Choose a benchmark…' : 'Choose a test…',
+                        },
+                        ...items.map((item) => ({ value: item.identifier, label: item.title })),
+                    ]}
+                />
+            </TabPanel>
+            <FormActions>
+                <Button
+                    variant="primary"
+                    loading={evaluationLoading}
+                    disabled={!selectedId}
+                    onClick={() => onSubmit(selectedTab, selectedId)}
+                >
+                    Evaluate
+                </Button>
+            </FormActions>
+        </Stack>
     )
 }
