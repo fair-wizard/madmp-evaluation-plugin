@@ -1,6 +1,27 @@
-import { useMemo, useState } from 'react'
+import { Alert } from '@ds-wizard/plugin-sdk/ui/Alert'
+import { Badge, BadgeTone } from '@ds-wizard/plugin-sdk/ui/Badge'
+import { Button, IconButton } from '@ds-wizard/plugin-sdk/ui/Button'
+import { DescriptionList, DescriptionListItem } from '@ds-wizard/plugin-sdk/ui/DescriptionList'
+import { EmptyState } from '@ds-wizard/plugin-sdk/ui/EmptyState'
+import { Inline, Stack } from '@ds-wizard/plugin-sdk/ui/Layout'
+import { List, ListItem } from '@ds-wizard/plugin-sdk/ui/ListItem'
+import { Body, Code, Muted, Title } from '@ds-wizard/plugin-sdk/ui/Text'
+import { token } from '@ds-wizard/plugin-sdk/ui/tokens'
+import { CSSProperties, useMemo, useState } from 'react'
 
 import { Evaluation, EvaluationResponse, EvaluationResult } from './data'
+
+const preStyle: CSSProperties = {
+    margin: 0,
+    padding: token('--ui-space-3'),
+    maxHeight: '16rem',
+    overflow: 'auto',
+    whiteSpace: 'pre-wrap',
+    borderRadius: token('--ui-radius-control'),
+    background: token('--ui-surface-sunken'),
+    color: token('--ui-text'),
+    fontSize: token('--ui-text-body-sm'),
+}
 
 export function EvaluationResultsView({
     data,
@@ -47,46 +68,46 @@ export function EvaluationResultsView({
     }
 
     return (
-        <div className="col col-detail mx-auto">
-            <div className="d-flex align-items-center justify-content-between mb-3">
-                <h2 className="mb-0">Evaluation Results</h2>
-
+        <Stack loose>
+            <Inline align="between">
+                <Title>Evaluation Results</Title>
                 {onBack && (
-                    <button className="btn btn-wide btn-outline-secondary" onClick={onBack}>
+                    <Button icon="fa-arrow-left" onClick={onBack}>
                         Back
-                    </button>
+                    </Button>
                 )}
-            </div>
+            </Inline>
 
-            {data.message && <div className="alert alert-info">{data.message}</div>}
+            {data.message && <Alert tone="info">{data.message}</Alert>}
 
-            {/* SUMMARY (only > 0) */}
-            <div className="d-flex flex-wrap gap-2 mb-3">
+            <Inline>
                 {(Object.entries(counts) as [EvaluationResult, number][])
                     .filter(([, count]) => count > 0)
                     .map(([result, count]) => (
-                        <span key={result} className={badgeClass(result)}>
+                        <Badge key={result} tone={resultTone(result)} icon={resultIcon(result)}>
                             {result}: {count}
-                        </span>
+                        </Badge>
                     ))}
-            </div>
+            </Inline>
 
             {evaluations.length === 0 ? (
-                <div className="alert alert-secondary">No evaluations returned.</div>
+                <EmptyState
+                    title="No evaluations"
+                    description="The evaluation service returned no evaluations."
+                />
             ) : (
-                <div className="list-group">
-                    {evaluations.map((e) => {
-                        return (
-                            <EvaluationView
-                                evaluation={e}
-                                isOpen={openIds.has(e.identifier)}
-                                toggle={toggle}
-                            />
-                        )
-                    })}
-                </div>
+                <List>
+                    {evaluations.map((e) => (
+                        <EvaluationView
+                            key={e.identifier}
+                            evaluation={e}
+                            isOpen={openIds.has(e.identifier)}
+                            toggle={toggle}
+                        />
+                    ))}
+                </List>
             )}
-        </div>
+        </Stack>
     )
 }
 
@@ -100,116 +121,103 @@ function EvaluationView({
     toggle: (id: string) => void
 }) {
     return (
-        <div key={e.identifier} className="list-group-item">
-            <div
-                className="d-flex justify-content-between align-items-center"
-                style={{ cursor: 'pointer' }}
-                onClick={() => toggle(e.identifier)}
-            >
-                <div className="d-flex align-items-center gap-2">
-                    <span className={badgeClass(e.value)}>
-                        <i className={`${iconClass(e.value)} me-1`} />
-                        {e.value}
-                    </span>
-                    <strong>{e.title}</strong>
-                </div>
-
-                <i className={`fas ${isOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`} />
-            </div>
-
-            {isOpen && (
-                <div className="mt-1">
-                    {e.description && <p className="text-muted">{e.description}</p>}
-
-                    <div className="mt-3">
-                        {e.generatedAtTime && (
-                            <div className="mb-3">
-                                <div className="fw-semibold small">Timestamp</div>
-                                <div>{formatTimestamp(e.generatedAtTime)}</div>
-                            </div>
-                        )}
-
-                        {e.log && (
-                            <div className="mb-3">
-                                <div className="fw-semibold small">Log</div>
-                                <pre className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>
-                                    {e.log}
-                                </pre>
-                            </div>
-                        )}
-
-                        {e.reportId && (
-                            <div className="mb-3">
-                                <div className="fw-semibold small">Report ID</div>
-                                <code>{e.reportId}</code>
-                            </div>
-                        )}
-
-                        {e.wasGeneratedBy && (
-                            <div className="mb-3">
-                                <div className="fw-semibold small">Generated by</div>
-                                <code className="text-break">{e.wasGeneratedBy}</code>
-                            </div>
-                        )}
-
-                        {(e.affectedElements ?? null) !== null && (
-                            <div className="mb-3">
-                                <div className="fw-semibold small">Affected elements</div>
-                                <pre className="mb-0">{e.affectedElements?.toString()}</pre>
-                            </div>
-                        )}
-
-                        {(e.completion ?? null) !== null && (
-                            <div className="mb-3">
-                                <div className="fw-semibold small">Completion</div>
-                                <div>{e.completion}%</div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-        </div>
+        <ListItem
+            title={e.title}
+            icon={
+                <Badge tone={resultTone(e.value)} icon={resultIcon(e.value)}>
+                    {e.value}
+                </Badge>
+            }
+            actions={
+                <IconButton
+                    icon={isOpen ? 'fa-chevron-up' : 'fa-chevron-down'}
+                    label={isOpen ? 'Hide details' : 'Show details'}
+                    variant="ghost"
+                    pressed={isOpen}
+                    onClick={() => toggle(e.identifier)}
+                />
+            }
+            detail={isOpen ? <EvaluationDetail evaluation={e} /> : undefined}
+        />
     )
 }
 
-function badgeClass(result: EvaluationResult) {
+function EvaluationDetail({ evaluation: e }: { evaluation: Evaluation }) {
+    const items: DescriptionListItem[] = []
+
+    if (e.generatedAtTime) {
+        items.push({ term: 'Timestamp', description: formatTimestamp(e.generatedAtTime) })
+    }
+    if (e.log) {
+        items.push({ term: 'Log', description: <Preformatted>{e.log}</Preformatted> })
+    }
+    if (e.reportId) {
+        items.push({ term: 'Report ID', description: <Code>{e.reportId}</Code> })
+    }
+    if (e.wasGeneratedBy) {
+        items.push({ term: 'Generated by', description: <Code>{e.wasGeneratedBy}</Code> })
+    }
+    if ((e.affectedElements ?? null) !== null) {
+        items.push({
+            term: 'Affected elements',
+            description: <Preformatted>{e.affectedElements?.toString()}</Preformatted>,
+        })
+    }
+    if ((e.completion ?? null) !== null) {
+        items.push({ term: 'Completion', description: `${e.completion}%` })
+    }
+
+    return (
+        <Stack>
+            {e.description && (
+                <Body>
+                    <Muted>{e.description}</Muted>
+                </Body>
+            )}
+            {items.length > 0 && <DescriptionList items={items} />}
+        </Stack>
+    )
+}
+
+function Preformatted({ children }: { children: string | undefined }) {
+    return <pre style={preStyle}>{children}</pre>
+}
+
+function resultTone(result: EvaluationResult): BadgeTone {
     switch (result) {
         case 'PASS':
-            return 'badge bg-success'
+            return 'success'
         case 'FAIL':
-            return 'badge bg-danger'
+            return 'danger'
         case 'ERROR':
-            return 'badge bg-dark'
+            return 'inverse'
         case 'INDERTERMINATED':
         case 'INDETERMINATE':
-            return 'badge bg-warning text-dark'
-        case 'NOT_APPLICABLE':
-            return 'badge bg-secondary'
+            return 'warning'
         default:
-            return 'badge bg-secondary'
+            return 'neutral'
     }
 }
 
-function iconClass(result: EvaluationResult) {
+function resultIcon(result: EvaluationResult) {
     switch (result) {
         case 'PASS':
-            return 'fas fa-check-circle'
+            return 'fa-check-circle'
         case 'FAIL':
-            return 'fas fa-times-circle'
+            return 'fa-times-circle'
         case 'ERROR':
-            return 'fas fa-bug'
+            return 'fa-bug'
         case 'INDERTERMINATED':
         case 'INDETERMINATE':
-            return 'fas fa-question-circle'
+            return 'fa-question-circle'
         case 'NOT_APPLICABLE':
-            return 'fas fa-minus-circle'
+            return 'fa-minus-circle'
         default:
-            return 'fas fa-circle'
+            return 'fa-circle'
     }
 }
 
-function formatTimestamp(ts: string | null) {
-    if (!ts) return null
+function formatTimestamp(ts: string) {
     const d = new Date(ts)
     return Number.isNaN(d.getTime()) ? ts : d.toLocaleString()
 }
