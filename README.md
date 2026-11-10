@@ -24,6 +24,13 @@ The `EVALUATION_SERVICE_API_URL` environment variable only sets the fallback for
 
 ## Changelog
 
+### 1.1.0
+
+- Updated plugin SDK to 0.12.0 (plugin API 0.5), FAIR Wizard 5.0 or newer is required
+- Updated UI to the Wizard 5.0 design system
+- Fixed recognizing the knowledge model package with Wizard 5.0
+- Updated dependencies
+
 ### 1.0.0
 
 - Made DMP Evaluation Service URL configurable in plugin settings
