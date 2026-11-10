@@ -147,8 +147,7 @@ REPLIES = {
 }
 
 PACKAGE = {
-    'organizationId': 'dsw',
-    'kmId': 'root',
+    'id': 'dsw.root',
     'version': '2.7.0',
     'name': 'Common DSW Knowledge Model',
 }
@@ -174,7 +173,7 @@ def test_root(dmp: dict) -> None:
     assert dmp['modified'] == MODIFIED
     assert dmp['language'] == 'eng'
     assert dmp['dmp_id'] == {'identifier': f'{CLIENT_URL}/projects/b0f5c1b8-2b6a-4a36-a3b1-5d7a4c52c1f0', 'type': 'url'}
-    assert 'dsw:root:2.7.0' in dmp['description']
+    assert 'dsw.root:2.7.0' in dmp['description']
 
 
 def test_contributors_and_contact(dmp: dict) -> None:
@@ -301,13 +300,18 @@ def test_contact_fallback() -> None:
 
 
 def test_lifesciences_supported() -> None:
-    package = {**PACKAGE, 'kmId': 'lifesciences'}
+    package = {**PACKAGE, 'id': 'dsw.lifesciences'}
     assert to_madmp(project({}, package), CLIENT_URL, CREATED, MODIFIED)['dmp']['title'] == 'My DMP'
+
+
+def test_km_identified_by_two_parts() -> None:
+    package = {'organizationId': 'dsw', 'kmId': 'root', 'version': '2.7.0', 'name': PACKAGE['name']}
+    assert 'dsw.root:2.7.0' in to_madmp(project({}, package), CLIENT_URL, CREATED, MODIFIED)['dmp']['description']
 
 
 def test_unsupported_km() -> None:
     with pytest.raises(ValueError, match='Unsupported knowledge model package'):
-        to_madmp(project({}, {**PACKAGE, 'organizationId': 'other'}), CLIENT_URL, CREATED, MODIFIED)
+        to_madmp(project({}, {**PACKAGE, 'id': 'other.root'}), CLIENT_URL, CREATED, MODIFIED)
 
 
 @pytest.mark.parametrize(('text', 'expected'), [

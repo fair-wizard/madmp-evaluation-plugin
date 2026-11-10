@@ -1,8 +1,8 @@
-"""Mapping of FAIR Wizard projects using dsw:root knowledge model (2.7.0+) to RDA DMP Common Standard (maDMP)."""
+"""Mapping of FAIR Wizard projects using dsw.root knowledge model (2.7.0+) to RDA DMP Common Standard (maDMP)."""
 import re
 from typing import Any
 
-SUPPORTED_KM_PREFIXES = ('dsw:root:', 'dsw:lifesciences:')
+SUPPORTED_KM_PREFIXES = ('dsw.root:', 'dsw.lifesciences:')
 
 
 class UUIDs:
@@ -797,7 +797,9 @@ def _ethical_issues(replies: Replies) -> tuple[str, str]:
 
 def check_knowledge_model(project_data: dict) -> str:
     package = project_data.get('knowledgeModelPackage') or {}
-    package_id = ':'.join(package.get(key, '') for key in ('organizationId', 'kmId', 'version'))
+    # Wizard 5.0 identifies a package by one `id`, earlier versions by its two parts
+    km_id = package.get('id') or '.'.join(package.get(key, '') for key in ('organizationId', 'kmId'))
+    package_id = f'{km_id}:{package.get("version", "")}'
     if not package_id.startswith(SUPPORTED_KM_PREFIXES):
         msg = f'Unsupported knowledge model package: {package_id}'
         raise ValueError(msg)
