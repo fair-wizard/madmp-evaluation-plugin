@@ -24,6 +24,12 @@ The `EVALUATION_SERVICE_API_URL` environment variable only sets the fallback for
 
 ## Changelog
 
+### 1.1.1
+
+- Removed project action left over from the plugin template
+- Fixed width and padding of the evaluation tab
+- Fixed showing the error when an evaluation fails before the maDMP is built
+
 ### 1.1.0
 
 - Updated plugin SDK to 0.12.0 (plugin API 0.5), FAIR Wizard 5.0 or newer is required
