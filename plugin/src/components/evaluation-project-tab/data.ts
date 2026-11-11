@@ -69,7 +69,7 @@ export const EvaluationResponseSchema = z.object({
     ok: z.boolean(),
     message: z.string().nullable(),
     evaluations: z.array(EvaluationSchema),
-    madmp: z.object({ dmp: z.unknown() }).optional(),
+    madmp: z.object({ dmp: z.unknown() }).nullable().optional(),
 })
 
 export type Evaluation = z.infer<typeof EvaluationSchema>

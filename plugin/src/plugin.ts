@@ -21,12 +21,6 @@ export default function (settingsInput: unknown, _userSettingsInput: unknown): P
             EvaluationProjectTab,
             ['dsw:root:^2.7'],
         )
-        .addProjectAction(
-            'Action Name',
-            'x-plugin-name-project-action', // web component name
-            EvaluationProjectTab, // React component with plugin functionality
-            ['dsw:root:^2'], // (optional) list of supported knowledge models
-        )
         .addSettings('x-madmp-evaluation-settings', EvaluationSettings)
         .createPlugin()
 

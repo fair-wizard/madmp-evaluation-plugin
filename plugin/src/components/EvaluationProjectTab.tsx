@@ -1,7 +1,8 @@
 import { ProjectTabComponentProps } from '@ds-wizard/plugin-sdk/elements'
 import { AsyncBlock } from '@ds-wizard/plugin-sdk/ui/AsyncBlock'
 import { Stack } from '@ds-wizard/plugin-sdk/ui/Layout'
-import { useEffect, useState } from 'react'
+import { token } from '@ds-wizard/plugin-sdk/ui/tokens'
+import { CSSProperties, ReactNode, useEffect, useState } from 'react'
 
 import { getEvaluationServiceUrl, SettingsData } from '../data/settings-data'
 import { EvaluationResponse, EvaluationType, FormData } from './evaluation-project-tab/data'
@@ -10,6 +11,23 @@ import { EvaluationSelectionForm } from './evaluation-project-tab/EvaluationSele
 import { getFormData, postEvaluation } from './evaluation-project-tab/requests'
 
 type View = 'loading' | 'form' | 'results' | 'error'
+
+const contentStyle: CSSProperties = {
+    inlineSize: '100%',
+    maxInlineSize: token('--ui-measure-form'),
+    marginInline: 'auto',
+}
+
+// The wizard pads a project tab only when a Stack is its root element
+function TabContent({ children }: { children: ReactNode }) {
+    return (
+        <Stack>
+            <Stack loose style={contentStyle}>
+                {children}
+            </Stack>
+        </Stack>
+    )
+}
 
 export default function ProjectTab({
     project,
@@ -56,7 +74,7 @@ export default function ProjectTab({
                 setEvaluationResult(result)
                 setView('results')
             } else {
-                setEvaluationError(result.message ?? 'Evaluation failed')
+                setEvaluationError(result.message || 'Evaluation failed')
                 setView('form')
             }
         } catch (error: Error | unknown) {
@@ -69,17 +87,17 @@ export default function ProjectTab({
 
     if (view === 'loading' || view === 'error') {
         return (
-            <Stack>
+            <TabContent>
                 <AsyncBlock
                     loading={view === 'loading'}
                     error={loadingError ?? 'An unknown error occurred'}
                 />
-            </Stack>
+            </TabContent>
         )
     }
 
     return (
-        <Stack loose>
+        <TabContent>
             {view === 'results' && evaluationResult ? (
                 <EvaluationResultsView data={evaluationResult} onBack={() => setView('form')} />
             ) : (
@@ -90,6 +108,6 @@ export default function ProjectTab({
                     onSubmit={handleSubmit}
                 />
             )}
-        </Stack>
+        </TabContent>
     )
 }
